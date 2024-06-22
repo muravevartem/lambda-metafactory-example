@@ -9,8 +9,9 @@ public class Main {
         Supplier<A> supplier = createSupplier(A.class);
         Supplier<A> supplierA = A::new;
 
+        long sum;
         for (int j = 0 ; j < 100000; j++) {
-            long sum = 0;
+            sum = 0;
             for (int i = 0; i < 100; i++) {
                 long time = test0();
                 sum += time;
@@ -41,7 +42,7 @@ public class Main {
             }
         }
 
-        long sum = 0;
+        sum = 0;
         for (int i = 0; i < 100; i++) {
             long time = test0();
             sum += time;
