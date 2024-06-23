@@ -1,4 +1,4 @@
-# [LambdaMetafactory](https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/lang/invoke/LambdaMetafactory.html)
+# Пример использования [LambdaMetafactory](https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/lang/invoke/LambdaMetafactory.html)
 
 Создание производителя (*Supplier*) экземляров класса A на основе контсруктора без параметров
 
@@ -15,3 +15,5 @@
         return (Supplier<A>) factory.invoke();
     }
 ```
+
+В исходниках предоставлен очень простой тест скорости Reflection/LambdaMetafactory
