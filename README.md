@@ -1,19 +1,31 @@
-# Пример использования [LambdaMetafactory](https://docs.oracle.com/javase%2F8%2Fdocs%2Fapi%2F%2F/java/lang/invoke/LambdaMetafactory.html)
+# LambdaMetafactory
 
-Создание производителя (*Supplier*) экземляров класса A на основе контсруктора без параметров
+## Создание
 
 ```java
-    private static Supplier<A> createSupplier(Class<? extends A> aggregateType) throws Throwable {
-        CallSite metafactory = LambdaMetafactory.metafactory(
-                MethodHandles.lookup(),
-                "get",
-                MethodType.methodType(Supplier.class),
-                MethodType.methodType(Object.class),
-                MethodHandles.privateLookupIn(aggregateType, MethodHandles.lookup()).findConstructor(aggregateType, MethodType.methodType(void.class)),
-                MethodType.methodType(aggregateType));
-        MethodHandle factory = metafactory.getTarget();
-        return (Supplier<A>) factory.invoke();
-    }
+public static  <T> Supplier<T> createSupplierByConstructor(Class<T> clazz) throws Throwable {
+    MethodHandles.Lookup lookup = MethodHandles.lookup();
+    MethodHandle constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+
+    CallSite callSite = LambdaMetafactory.metafactory(
+            lookup,
+            "get",
+            MethodType.methodType(Supplier.class),
+            MethodType.methodType(Object.class),
+            constructor,
+            MethodType.methodType(clazz)
+    );
+
+    //noinspection unchecked
+    return (Supplier<T>) callSite.getTarget().invoke();
+}
 ```
 
-В исходниках предоставлен очень простой тест скорости Reflection/LambdaMetafactory
+## Benchmark
+
+| Метод       | Результат              | Сравнение с нативным способом |
+|-------------|------------------------|-------------------------------|
+| MetaLambda  | 1,585 ±  0,025  ops/ns | -39.9%                        |
+| Reflection  | 0,031 ±  0,001  ops/ns | -99.9%                        |
+| Конструктор | 2,640 ±  0,060  ops/ns | -0%                           |
+
